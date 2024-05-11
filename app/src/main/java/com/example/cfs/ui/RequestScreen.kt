@@ -28,17 +28,35 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(modifier: Modifier = Modifier) {
+    val courseItems = remember { mutableListOf("Course A", "Course B", "Course C") }
+
+
     var dateResult by remember { mutableStateOf("Pick a date") }
-    val openDialog = remember { mutableStateOf(false) }
+    var openDialog by remember { mutableStateOf(false) }
 
     var isExpanded by remember { mutableStateOf(false) }
     var selectedCourse by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+
+//        TextField(
+//            modifier = Modifier.clickable(enabled = true, onClick = { openDialog = true }),
+//            value = dateResult,
+//            onValueChange = {},
+//            readOnly = true,
+//            trailingIcon = {
+//                IconButton(
+//                    onClick = { openDialog = true }
+//                ) {
+//                    Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
+//                }
+//            },
+//            colors = ExposedDropdownMenuDefaults.textFieldColors()
+//        )
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { openDialog.value = true }
+            onClick = { openDialog = true }
         ) {
             Text(text = dateResult)
         }
@@ -46,46 +64,52 @@ fun RequestScreen(modifier: Modifier = Modifier) {
             isExpanded = isExpanded,
             onExpandedChange = { isExpanded = it },
             selectedCourse = selectedCourse,
-            onCourseSelected = { selectedCourse = it }
+            onCourseSelected = { selectedCourse = it },
+            courseItems = courseItems
         )
 
 
     }
-    if (openDialog.value) {
-        val datePickerState = rememberDatePickerState()
-        DatePickerComponent(
-            datePickerState = datePickerState,
-            onDismissRequest = { openDialog.value = false },
-            onDateSelected = { date ->
-                dateResult = convertLongToTime(date)
-                openDialog.value = false
-            }
-        )
-    }
+
+    val datePickerState = rememberDatePickerState()
+    DatePickerComponent(
+        openDialog = openDialog,
+        datePickerState = datePickerState,
+        onDismissRequest = { openDialog = false },
+        onDateSelected = { date ->
+            dateResult = convertLongToTime(date)
+            openDialog = false
+        }
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerComponent(
+    openDialog: Boolean,
     datePickerState: DatePickerState,
     onDismissRequest: () -> Unit,
     onDateSelected: (Long) -> Unit
 ) {
-    DatePickerDialog(
-        onDismissRequest = onDismissRequest,
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                    onDateSelected(datePickerState.selectedDateMillis ?: 0L)
+    if (openDialog) {
+        DatePickerDialog(
+            onDismissRequest = onDismissRequest,
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDismissRequest()
+                        onDateSelected(datePickerState.selectedDateMillis ?: 0L)
+                    }
+                ) {
+                    Text(text = "Confirm")
                 }
-            ) {
-                Text(text = "Confirm")
             }
+        ) {
+            DatePicker(state = datePickerState)
         }
-    ) {
-        DatePicker(state = datePickerState)
     }
+
 }
 
 fun convertLongToTime(time: Long): String {
@@ -100,7 +124,8 @@ fun DropdownMenuComponent(
     isExpanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     selectedCourse: String,
-    onCourseSelected: (String) -> Unit
+    onCourseSelected: (String) -> Unit,
+    courseItems: List<String>
 ) {
     ExposedDropdownMenuBox(
         expanded = isExpanded,
@@ -120,13 +145,15 @@ fun DropdownMenuComponent(
             expanded = isExpanded,
             onDismissRequest = { onExpandedChange(false) }
         ) {
-            DropdownMenuItem(
-                text = { Text(text = "seng 101") },
-                onClick = {
-                    onCourseSelected("seng 101")
-                    onExpandedChange(false)
-                }
-            )
+            courseItems.forEach { course ->
+                DropdownMenuItem(
+                    text = { Text(text = course) },
+                    onClick = {
+                        onCourseSelected(course)
+                        onExpandedChange(false)
+                    }
+                )
+            }
             // Add more items as needed
         }
     }
