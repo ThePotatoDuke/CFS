@@ -1,8 +1,15 @@
 package com.example.cfs.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -10,7 +17,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -20,8 +28,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.cfs.R
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -30,58 +43,80 @@ import java.util.Date
 fun RequestScreen(modifier: Modifier = Modifier) {
     val courseItems = remember { mutableListOf("Course A", "Course B", "Course C") }
 
-
     var dateResult by remember { mutableStateOf("Pick a date") }
     var openDialog by remember { mutableStateOf(false) }
 
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedCourse by remember { mutableStateOf("") }
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    var selectedCourse by remember { mutableStateOf("Choose Course") }
 
-//        TextField(
-//            modifier = Modifier.clickable(enabled = true, onClick = { openDialog = true }),
-//            value = dateResult,
-//            onValueChange = {},
-//            readOnly = true,
-//            trailingIcon = {
-//                IconButton(
-//                    onClick = { openDialog = true }
-//                ) {
-//                    Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
-//                }
-//            },
-//            colors = ExposedDropdownMenuDefaults.textFieldColors()
-//        )
-        //
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { openDialog = true }
+    var topic by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dimensionResource(R.dimen.padding_small)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
-            Text(text = dateResult)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(50.dp)
+            ) {
+                DropdownMenuComponent(
+                    isExpanded = isExpanded,
+                    onExpandedChange = { isExpanded = it },
+                    selectedCourse = selectedCourse,
+                    onCourseSelected = { selectedCourse = it },
+                    courseItems = courseItems,
+                )
+
+                TextField(
+                    value = dateResult,
+                    onValueChange = { },
+                    readOnly = true,
+                    label = { Text("Date") }, // Add label here
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { openDialog = true }
+                        ) {
+                            Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    modifier = Modifier.fillMaxWidth() // Expand the width to fill the parent
+                )
+
+                val datePickerState = rememberDatePickerState()
+                DatePickerComponent(
+                    openDialog = openDialog,
+                    datePickerState = datePickerState,
+                    onDismissRequest = { openDialog = false },
+                    onDateSelected = { date ->
+                        dateResult = convertLongToTime(date)
+                        openDialog = false
+                    },
+                )
+
+                TextField(
+                    value = topic,
+                    onValueChange = { topic = it },
+                    label = { Text("Topic") }, // Add label here
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    )
+                )
+            }
         }
-        DropdownMenuComponent(
-            isExpanded = isExpanded,
-            onExpandedChange = { isExpanded = it },
-            selectedCourse = selectedCourse,
-            onCourseSelected = { selectedCourse = it },
-            courseItems = courseItems
-        )
 
 
     }
-
-    val datePickerState = rememberDatePickerState()
-    DatePickerComponent(
-        openDialog = openDialog,
-        datePickerState = datePickerState,
-        onDismissRequest = { openDialog = false },
-        onDateSelected = { date ->
-            dateResult = convertLongToTime(date)
-            openDialog = false
-        }
-    )
 
 }
 

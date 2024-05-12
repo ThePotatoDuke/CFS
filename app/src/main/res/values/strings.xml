@@ -5,4 +5,5 @@
     <string name="password">Password</string>
     <string name="new_request">New Request</string>
     <string name="feedback_list">Feedback List</string>
+    <string name="topic">Topic</string>
 </resources>

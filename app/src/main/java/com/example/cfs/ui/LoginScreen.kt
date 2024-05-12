@@ -1,6 +1,5 @@
 package com.example.cfs.ui
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -99,10 +98,9 @@ fun EditTextField(
     keyboardOptions: KeyboardOptions,
     value: String,
     onValueChange: (String) -> Unit,
-    isLoginError: Boolean,
+    isLoginError: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Log.d("test", "textfield $isLoginError}")
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,

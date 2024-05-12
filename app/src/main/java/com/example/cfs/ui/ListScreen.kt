@@ -1,5 +1,7 @@
 package com.example.cfs.ui
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -11,14 +13,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cfs.R
@@ -61,12 +67,12 @@ fun FeedbackItem(
                         .padding(dimensionResource(id = R.dimen.padding_small))
                 )
 
-
             }
             Divider(
                 modifier = Modifier
                     .fillMaxHeight()  //fill the max height
-                    .width(1.dp)
+                    .width(1.dp),
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Column(modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small))) {
@@ -97,6 +103,30 @@ val feedbacks = listOf(
         "Your dad returns ",
         Date(2024, 4, 15),
         "The instructor was very knowledgeable."
+    ),
+    Feedback(
+        "MATH 301",
+        "Calculating gravitational pull of your mom ",
+        Date(2024, 3, 20),
+        "Found the content challenging but rewarding."
+    ),
+    Feedback(
+        "MATH 301",
+        "Calculating gravitational pull of your mom ",
+        Date(2024, 3, 20),
+        "Found the content challenging but rewarding."
+    ),
+    Feedback(
+        "MATH 301",
+        "Calculating gravitational pull of your mom ",
+        Date(2024, 3, 20),
+        "Found the content challenging but rewarding."
+    ),
+    Feedback(
+        "MATH 301",
+        "Calculating gravitational pull of your mom ",
+        Date(2024, 3, 20),
+        "Found the content challenging but rewarding."
     ),
     Feedback(
         "MATH 301",
