@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +46,7 @@ fun RequestScreen(modifier: Modifier = Modifier) {
 
     var dateResult by remember { mutableStateOf("Pick a date") }
     var openDialog by remember { mutableStateOf(false) }
+    var isDateFocused by remember { mutableStateOf(false) }
 
     var isExpanded by remember { mutableStateOf(false) }
     var selectedCourse by remember { mutableStateOf("Choose Course") }
@@ -79,7 +81,7 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                     value = dateResult,
                     onValueChange = { },
                     readOnly = true,
-                    label = { Text("Date") }, // Add label here
+                    label = { Text("Date") }, // Add label here from resource
                     trailingIcon = {
                         IconButton(
                             onClick = { openDialog = true }
@@ -88,14 +90,17 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    modifier = Modifier.fillMaxWidth() // Expand the width to fill the parent
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { isDateFocused = it.isFocused }
                 )
+
 
                 val datePickerState = rememberDatePickerState()
                 DatePickerComponent(
-                    openDialog = openDialog,
+                    isFocused = isDateFocused,
                     datePickerState = datePickerState,
-                    onDismissRequest = { openDialog = false },
+                    onDismissRequest = { isDateFocused = false },
                     onDateSelected = { date ->
                         dateResult = convertLongToTime(date)
                         openDialog = false
@@ -123,12 +128,12 @@ fun RequestScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerComponent(
-    openDialog: Boolean,
+    isFocused: Boolean,
     datePickerState: DatePickerState,
     onDismissRequest: () -> Unit,
     onDateSelected: (Long) -> Unit
 ) {
-    if (openDialog) {
+    if (isFocused) {
         DatePickerDialog(
             onDismissRequest = onDismissRequest,
             confirmButton = {
