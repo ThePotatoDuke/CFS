@@ -30,6 +30,7 @@ enum class Routes() {
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -77,6 +78,7 @@ fun MainScreen() {
         }
     ) { paddingValues ->
         NavHost(
+
             navController = navController,
             startDestination = Routes.Request.name,
             modifier = Modifier.padding(paddingValues)
