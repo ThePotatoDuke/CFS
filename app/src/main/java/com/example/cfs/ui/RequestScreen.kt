@@ -45,7 +45,6 @@ fun RequestScreen(modifier: Modifier = Modifier) {
     val courseItems = remember { mutableListOf("Course A", "Course B", "Course C") }
 
     var dateResult by remember { mutableStateOf("Pick a date") }
-    var openDialog by remember { mutableStateOf(false) }
     var isDateFocused by remember { mutableStateOf(false) }
 
     var isExpanded by remember { mutableStateOf(false) }
@@ -84,7 +83,7 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                     label = { Text("Date") }, // Add label here from resource
                     trailingIcon = {
                         IconButton(
-                            onClick = { openDialog = true }
+                            onClick = { isDateFocused = true }
                         ) {
                             Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
                         }
@@ -103,7 +102,7 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                     onDismissRequest = { isDateFocused = false },
                     onDateSelected = { date ->
                         dateResult = convertLongToTime(date)
-                        openDialog = false
+                        isDateFocused = false
                     },
                 )
 
