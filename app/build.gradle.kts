@@ -1,8 +1,12 @@
+val supabase_version: String by project
+val ktor_version: String by project
+val kotlin_version: String by project
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23" // bunu almama izin vermiyo variable dan kotlin version a esitlemeye calissam da
 }
-val supabase_version: String by project
+
 
 android {
     namespace = "com.example.cfs"
@@ -74,4 +78,16 @@ dependencies {
     implementation(platform("io.github.jan-tennert.supabase:bom:$supabase_version"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha01")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabase_version")
+    implementation("io.github.jan-tennert.supabase:storage-kt:$supabase_version")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:$supabase_version")
+    implementation("io.ktor:ktor-client-android:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-utils:$ktor_version")
+
+    implementation("com.google.dagger:hilt-android:$1.2.0")
+    annotationProcessor("com.google.dagger:hilt-compiler:1.2.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+
 }
