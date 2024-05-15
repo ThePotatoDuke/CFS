@@ -85,9 +85,5 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-utils:$ktor_version")
 
-    implementation("com.google.dagger:hilt-android:$1.2.0")
-    annotationProcessor("com.google.dagger:hilt-compiler:1.2.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-
 
 }

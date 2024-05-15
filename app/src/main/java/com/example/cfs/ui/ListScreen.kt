@@ -1,7 +1,5 @@
 package com.example.cfs.ui
 
-import android.util.Log
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -12,37 +10,55 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
-import java.util.Date
+import com.example.cfs.data.supabase
+import com.example.cfs.models.Feedback
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun ListScreen(modifier: Modifier = Modifier) {
+fun ListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ListViewModel = viewModel()
+) {
+    val feedbacks = viewModel.feedbackList.collectAsState(initial = listOf()).value
     LazyColumn(modifier = Modifier.fillMaxHeight()) {
-        items(feedbacks) {
-            FeedbackItem(it)
+        feedbacks?.size?.let {
+            items(it) { index ->
+                // Access the feedback object using the index
+                val feedback = feedbacks[index]
+
+                // Render the UI for each feedback item
+                FeedbackItem(feedback, courseCode = viewModel.getCourseCode(feedback.course_id))
+            }
         }
+
     }
 }
 
 @Composable
 fun FeedbackItem(
     feedback: Feedback,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    courseCode: String
 ) {
     Card(
         modifier = modifier
@@ -61,7 +77,7 @@ fun FeedbackItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = feedback.courseName,
+                    text = courseCode,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small))
@@ -77,11 +93,11 @@ fun FeedbackItem(
 
             Column(modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small))) {
                 Text(
-                    text = feedback.topic,
+                    text = feedback.course_topic,
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = feedback.courseDate.toString(),
+                    text = feedback.course_date.toString(),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -89,59 +105,20 @@ fun FeedbackItem(
     }
 }
 
-data class Feedback(
-    val courseName: String,
-    val topic: String,
-    val courseDate: Date,
-    val feedback: String = ""
-)
+@Composable
+fun FeedbackList() {
+    var feedbacks by remember { mutableStateOf<List<Feedback>>(listOf()) }
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            feedbacks = supabase.from("feedbacks")
+                .select().decodeList<Feedback>()
+        }
+    }
 
-val feedbacks = listOf(
-    Feedback("SENG 101", "Visiting your mom ", Date(2024, 5, 10), "Great course, learned a lot!"),
-    Feedback(
-        "COMP 202",
-        "Your dad returns ",
-        Date(2024, 4, 15),
-        "The instructor was very knowledgeable."
-    ),
-    Feedback(
-        "MATH 301",
-        "Calculating gravitational pull of your mom ",
-        Date(2024, 3, 20),
-        "Found the content challenging but rewarding."
-    ),
-    Feedback(
-        "MATH 301",
-        "Calculating gravitational pull of your mom ",
-        Date(2024, 3, 20),
-        "Found the content challenging but rewarding."
-    ),
-    Feedback(
-        "MATH 301",
-        "Calculating gravitational pull of your mom ",
-        Date(2024, 3, 20),
-        "Found the content challenging but rewarding."
-    ),
-    Feedback(
-        "MATH 301",
-        "Calculating gravitational pull of your mom ",
-        Date(2024, 3, 20),
-        "Found the content challenging but rewarding."
-    ),
-    Feedback(
-        "MATH 301",
-        "Calculating gravitational pull of your mom ",
-        Date(2024, 3, 20),
-        "Found the content challenging but rewarding."
-    )
-)
+}
 
 @Composable
 @Preview(showBackground = true)
 fun ListScreenPrv(modifier: Modifier = Modifier) {
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
-        items(feedbacks) {
-            FeedbackItem(it)
-        }
-    }
+
 }
