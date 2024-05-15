@@ -20,21 +20,21 @@ import kotlinx.coroutines.withContext
 
 
 class ListViewModel : ViewModel() {
-    private val _feedbackList = MutableStateFlow<List<Feedback>?>(listOf())
-    val feedbackList: Flow<List<Feedback>?> = _feedbackList
+    private val _feedbackList = MutableStateFlow<List<Feedback>>(listOf())
+    val feedbackList: Flow<List<Feedback>> = _feedbackList
 
 
     var courseCode: String by mutableStateOf("")
         private set
 
     init {
-        //getFeedbacks()
-        FeedbackList()
+        getFeedbacks()
+
     }
 
     @Composable
     fun FeedbackList() {
-        //var countries by remember { mutableStateOf<List<Country>>(listOf()) }
+
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 _feedbackList.emit(
@@ -47,7 +47,6 @@ class ListViewModel : ViewModel() {
     }
 
     suspend fun fetchFeedbacks(): List<Feedback> {
-
         return supabase
             .from("feedbacks")
             .select(Columns.list("id", "course_topic", "course_date"))
@@ -55,14 +54,14 @@ class ListViewModel : ViewModel() {
 
     }
 
-    fun getFeedbacks() {
+    private fun getFeedbacks() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = fetchFeedbacks()
             _feedbackList.emit(response)
         }
     }
 
-    suspend fun fetchCourseCode(course_id: Int?): String {
+    private suspend fun fetchCourseCode(course_id: Int?): String {
         return supabase
             .from("courses")
             .select(Columns.list("course_code")) {

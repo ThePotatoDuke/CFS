@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cfs.ui.ListScreen
+import com.example.cfs.ui.ListViewModel
 import com.example.cfs.ui.RequestScreen
 import com.example.cfs.ui.items
 
@@ -87,7 +88,7 @@ fun MainScreen() {
                 RequestScreen()
             }
             composable(route = Routes.List.name) {
-                ListScreen()
+                ListScreen(viewModel = ListViewModel())
             }
         }
     }
