@@ -44,14 +44,14 @@ fun RequestScreen(
 ) {
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
 
-    var dateResult = viewModel.dateReault
+    val dateResult = viewModel.dateReault
 
-    var isDateFocused = viewModel.isDateFocused
+    val isDateFocused = viewModel.isDateFocused
 
-    var isExpanded = viewModel.isExpanded
-    var selectedCourse = viewModel.selectedCourse
+    val isExpanded = viewModel.isExpanded
+    val selectedCourse = viewModel.selectedCourse
 
-    var topic = viewModel.topic
+    val topic = viewModel.topic
 
     Column(
         modifier = Modifier
@@ -71,9 +71,9 @@ fun RequestScreen(
             ) {
                 DropdownMenuComponent(
                     isExpanded = isExpanded,
-                    onExpandedChange = { isExpanded = it },
+                    onExpandedChange = { viewModel.updateIsExpanded(it) },
                     selectedCourse = selectedCourse,
-                    onCourseSelected = { selectedCourse = it },
+                    onCourseSelected = { viewModel.updateSelectedCourse(it) },
                     courseItems = courseCodes,
                 )
 
@@ -84,7 +84,7 @@ fun RequestScreen(
                     label = { Text("Date") }, // Add label here from resource
                     trailingIcon = {
                         IconButton(
-                            onClick = { isDateFocused = true }
+                            onClick = { }
                         ) {
                             Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
                         }
@@ -92,7 +92,7 @@ fun RequestScreen(
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .onFocusChanged { isDateFocused = it.isFocused }
+                        .onFocusChanged { viewModel.updateIsDateFocused(it.isFocused) }
                 )
 
 
@@ -100,16 +100,16 @@ fun RequestScreen(
                 DatePickerComponent(
                     isFocused = isDateFocused,
                     datePickerState = datePickerState,
-                    onDismissRequest = { isDateFocused = false },
+                    onDismissRequest = { viewModel.updateIsDateFocused(false) },
                     onDateSelected = { date ->
-                        dateResult = convertLongToTime(date)
-                        isDateFocused = false
+                        viewModel.updateDateResult(convertLongToTime(date))
+                        viewModel.updateIsDateFocused(false)
                     },
                 )
 
                 TextField(
                     value = topic,
-                    onValueChange = { topic = it },
+                    onValueChange = { viewModel.updateTopic(it) },
                     label = { Text("Topic") }, // Add label here
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier.fillMaxWidth(),

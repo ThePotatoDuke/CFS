@@ -22,7 +22,7 @@ class RequestViewModel : ViewModel() {
 //    private var _dateResult = MutableStateFlow("Pick a date")
 //    var dateResult: Flow<String> = _dateResult
 
-    var dateReault by mutableStateOf("Pick aaaaaaaaaaaaa date")
+    var dateReault by mutableStateOf("Pick a date")
         private set
 
 //    private var _isDateFocused = MutableStateFlow(false)
@@ -50,18 +50,26 @@ class RequestViewModel : ViewModel() {
 
     var topic by mutableStateOf("")
         private set
-//    fun updateDateResult(dateString: String) {
-//
-//    }
-//    fun updateIsDateFocused(dateString: String) {
-//
-//    }
-//    fun updateIsExpanded(dateString: String) {
-//
-//    }
-//    fun updateSelectedCourse(dateString: String) {
-//
-//    }
+
+    fun updateDateResult(dateString: String) {
+        dateReault = dateString
+    }
+
+    fun updateIsDateFocused(isDateFocused: Boolean) {
+        this.isDateFocused = isDateFocused
+    }
+
+    fun updateIsExpanded(isExpanded: Boolean) {
+        this.isExpanded = isExpanded
+    }
+
+    fun updateSelectedCourse(selectedCourse: String) {
+        this.selectedCourse = selectedCourse
+    }
+
+    fun updateTopic(topic: String) {
+        this.topic = topic
+    }
 
     init {
         getCourseCodes()
