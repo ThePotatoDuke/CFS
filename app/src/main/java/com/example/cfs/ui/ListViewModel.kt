@@ -22,7 +22,7 @@ class ListViewModel : ViewModel() {
 
 
     init {
-        getCourseCodes() // TABLE WAS UPDATED DOES IT CRASH BECAUSE OF IT?
+        getCourseCodes()
         getFeedbacks()
 
     }
