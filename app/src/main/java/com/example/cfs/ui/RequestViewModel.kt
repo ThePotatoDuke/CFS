@@ -1,5 +1,8 @@
 package com.example.cfs.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cfs.data.supabase
@@ -16,20 +19,49 @@ class RequestViewModel : ViewModel() {
     private val _courseCodeList = MutableStateFlow<List<String>>(listOf())
     val courseCodeList: Flow<List<String>> = _courseCodeList
 
-    private var _dateResult = MutableStateFlow("Pick a date")
-    var dateResult: Flow<String> = _dateResult
+//    private var _dateResult = MutableStateFlow("Pick a date")
+//    var dateResult: Flow<String> = _dateResult
 
-    private var _isDateFocused = MutableStateFlow(false)
-    var isDateFocused: Flow<Boolean> = _isDateFocused
+    var dateReault by mutableStateOf("Pick aaaaaaaaaaaaa date")
+        private set
 
-    private val _isExpanded = MutableStateFlow(false)
-    val isExpanded: Flow<Boolean> = _isExpanded
+//    private var _isDateFocused = MutableStateFlow(false)
+//    var isDateFocused: Flow<Boolean> = _isDateFocused
 
-    private var _selectedCourse = MutableStateFlow("Choose Course")
-    var selectedCourse: Flow<String> = _selectedCourse
+    var isDateFocused by mutableStateOf(false)
+        private set
 
-    private val _topic = MutableStateFlow("")
-    val topic: Flow<String> = _topic
+//    private val _isExpanded = MutableStateFlow(false)
+//    val isExpanded: Flow<Boolean> = _isExpanded
+
+    var isExpanded by mutableStateOf(false)
+        private set
+
+
+//    private var _selectedCourse = MutableStateFlow("Choose Course")
+//    var selectedCourse: Flow<String> = _selectedCourse
+
+    var selectedCourse by mutableStateOf("Choose Course")
+        private set
+
+//    private val _topic = MutableStateFlow("")
+//    val topic: Flow<String> = _topic
+
+
+    var topic by mutableStateOf("")
+        private set
+//    fun updateDateResult(dateString: String) {
+//
+//    }
+//    fun updateIsDateFocused(dateString: String) {
+//
+//    }
+//    fun updateIsExpanded(dateString: String) {
+//
+//    }
+//    fun updateSelectedCourse(dateString: String) {
+//
+//    }
 
     init {
         getCourseCodes()
@@ -52,4 +84,5 @@ class RequestViewModel : ViewModel() {
             _courseCodeList.emit(courseCodeStringList)
         }
     }
+
 }

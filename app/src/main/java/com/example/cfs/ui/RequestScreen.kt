@@ -44,14 +44,14 @@ fun RequestScreen(
 ) {
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
 
-    var dateResult = viewModel.dateResult.collectAsState(initial = "Pick a date").value
+    var dateResult = viewModel.dateReault
 
-    var isDateFocused = viewModel.isDateFocused.collectAsState(initial = false).value
+    var isDateFocused = viewModel.isDateFocused
 
-    var isExpanded = viewModel.isExpanded.collectAsState(initial = false).value
-    var selectedCourse = viewModel.selectedCourse.collectAsState(initial = "Courses").value
+    var isExpanded = viewModel.isExpanded
+    var selectedCourse = viewModel.selectedCourse
 
-    var topic = viewModel.topic.collectAsState(initial = "").value
+    var topic = viewModel.topic
 
     Column(
         modifier = Modifier
@@ -78,7 +78,7 @@ fun RequestScreen(
                 )
 
                 TextField(
-                    value = dateResult.toString(),
+                    value = dateResult,
                     onValueChange = { },
                     readOnly = true,
                     label = { Text("Date") }, // Add label here from resource
