@@ -1,10 +1,5 @@
 package com.example.cfs.ui
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cfs.data.supabase
@@ -16,40 +11,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class ListViewModel : ViewModel() {
     private val _feedbackList = MutableStateFlow<List<Feedback>>(listOf())
     val feedbackList: Flow<List<Feedback>> = _feedbackList
 
+    private val _courseCodeList = MutableStateFlow<List<Course>>(listOf())
+    val courseCodeList: Flow<List<Course>> = _courseCodeList
 
-    var courseCode: String by mutableStateOf("")
-        private set
 
     init {
+        getCourseCodes() // TABLE WAS UPDATED DOES IT CRASH BECAUSE OF IT?
         getFeedbacks()
 
     }
 
-    @Composable
-    fun FeedbackList() {
 
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.IO) {
-                _feedbackList.emit(
-                    supabase.from("countries")
-                        .select().decodeList<Feedback>()
-                )
-            }
-        }
-
-    }
-
-    suspend fun fetchFeedbacks(): List<Feedback> {
+    private suspend fun fetchFeedbacks(): List<Feedback> {
         return supabase
             .from("feedbacks")
-            .select(Columns.list("id", "course_topic", "course_date"))
+            .select(Columns.list("id", "course_topic", "course_date", "course_id"))
             .decodeList<Feedback>()
 
     }
@@ -61,28 +43,19 @@ class ListViewModel : ViewModel() {
         }
     }
 
-    private suspend fun fetchCourseCode(course_id: Int?): String {
+    private suspend fun fetchCourseCodes(): List<Course> {
         return supabase
             .from("courses")
-            .select(Columns.list("course_code")) {
-                filter {
-                    if (course_id != null) {
-                        eq("course_code", course_id)
-                    }
-                }
-            }
-            .decodeSingle<Course>().courseCode
-
+            .select(Columns.list("id", "course_code", "course_name"))
+            .decodeList<Course>()
 
     }
 
-    fun getCourseCode(course_id: Int?): String {
-
+    private fun getCourseCodes() {
         viewModelScope.launch(Dispatchers.IO) {
-            courseCode = fetchCourseCode(course_id)
-
+            val response = fetchCourseCodes()
+            _courseCodeList.emit(response)
         }
-        return courseCode
     }
 
 

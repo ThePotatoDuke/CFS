@@ -23,6 +23,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "SUPABASE_URL", "\"${System.getenv("SUPABASE_URL")}\"")
+        buildConfigField("String", "SUPABASE_KEY", "\"${System.getenv("SUPABASE_KEY")}\"")
     }
 
     buildTypes {
@@ -43,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

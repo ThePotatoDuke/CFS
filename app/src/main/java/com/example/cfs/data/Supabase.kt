@@ -1,11 +1,11 @@
 package com.example.cfs.data
 
-import android.net.http.HttpResponseCache.install
+import com.example.cfs.BuildConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 
-private val supabaseUrl: String = System.getenv("SUPABASE_URL") ?: "fire"
-private val supabaseKey: String = System.getenv("SUPABASE_KEY") ?: "hot"
+private val supabaseUrl: String = BuildConfig.SUPABASE_URL
+private val supabaseKey: String = BuildConfig.SUPABASE_KEY
 
 val supabase = createSupabaseClient(
     supabaseUrl, supabaseKey
