@@ -1,3 +1,5 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -27,11 +29,12 @@ enum class Routes() {
     List,
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
+    val listViewModel = ListViewModel()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -88,7 +91,7 @@ fun MainScreen() {
                 RequestScreen()
             }
             composable(route = Routes.List.name) {
-                ListScreen(viewModel = ListViewModel())
+                ListScreen(viewModel = listViewModel)
             }
         }
     }
