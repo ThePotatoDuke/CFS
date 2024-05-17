@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,7 +26,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -82,7 +79,7 @@ fun RequestScreen(
     val snackbarHostState = remember {
         SnackbarHostState()
     }
-    val coroutineScope  = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
     Scaffold(
@@ -121,7 +118,10 @@ fun RequestScreen(
                                 IconButton(
                                     onClick = { viewModel.updateIsDateFocused(true) }
                                 ) {
-                                    Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
+                                    Icon(
+                                        Icons.Rounded.DateRange,
+                                        contentDescription = "Select Date"
+                                    )
                                 }
                             },
                             colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -156,7 +156,7 @@ fun RequestScreen(
                             focusManager.clearFocus()
                             coroutineScope.launch {
                                 val snackBarResult = snackbarHostState.showSnackbar(
-                                    message = "Feedback activated successfully",
+                                    message = "Feedback request is sent",
                                     actionLabel = "Undo",
                                     duration = SnackbarDuration.Short
                                 )
@@ -170,7 +170,11 @@ fun RequestScreen(
                                         // dismissed
                                         viewModel.activateFeedback()
                                         Log.d("Snackbar", "feedback activated")
-                                        Toast.makeText(context, "Feedback successfully activated", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Feedback activated",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                             }

@@ -91,6 +91,7 @@ class RequestViewModel : ViewModel() {
             clearFields()
         }
     }
+
     private suspend fun activate() {
         // first fetch the course from selectedCourse
         val course = supabase
@@ -113,6 +114,7 @@ class RequestViewModel : ViewModel() {
 
         supabase.from("feedbacks").insert(feedback)
     }
+
     private fun clearFields() {
         dateResult = OffsetDateTime.now()
         topic = ""
