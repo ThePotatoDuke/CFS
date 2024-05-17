@@ -120,7 +120,6 @@ fun EditTextField(
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    val viewModel = remember { LoginViewModel() }
 
     CFSTheme {
         CFSTheme {

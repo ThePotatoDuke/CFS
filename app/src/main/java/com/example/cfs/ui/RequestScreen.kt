@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -24,33 +25,36 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RequestScreen(modifier: Modifier = Modifier) {
-    val courseItems = remember { mutableListOf("Course A", "Course B", "Course C") }
+fun RequestScreen(
+    modifier: Modifier = Modifier,
+) {
+    val viewModel = viewModel<RequestViewModel>()
+    val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
 
-    var dateResult by remember { mutableStateOf("Pick a date") }
-    var isDateFocused by remember { mutableStateOf(false) }
+    val dateResult = viewModel.dateResult
 
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedCourse by remember { mutableStateOf("Choose Course") }
+    val isDateFocused = viewModel.isDateFocused
 
-    var topic by remember { mutableStateOf("") }
+    val isExpanded = viewModel.isExpanded
+    val selectedCourse = viewModel.selectedCourse
+
+    val topic = viewModel.topic
 
     Column(
         modifier = Modifier
@@ -70,20 +74,20 @@ fun RequestScreen(modifier: Modifier = Modifier) {
             ) {
                 DropdownMenuComponent(
                     isExpanded = isExpanded,
-                    onExpandedChange = { isExpanded = it },
+                    onExpandedChange = { viewModel.updateIsExpanded(it) },
                     selectedCourse = selectedCourse,
-                    onCourseSelected = { selectedCourse = it },
-                    courseItems = courseItems,
+                    onCourseSelected = { viewModel.updateSelectedCourse(it) },
+                    courseItems = courseCodes,
                 )
 
                 TextField(
                     value = dateResult,
                     onValueChange = { },
                     readOnly = true,
-                    label = { Text("Date") }, // Add label here from resource
+                    label = { Text(text = stringResource(id = androidx.compose.material3.R.string.date_input_label)) },
                     trailingIcon = {
                         IconButton(
-                            onClick = { isDateFocused = true }
+                            onClick = { viewModel.updateIsDateFocused(true) }
                         ) {
                             Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
                         }
@@ -91,7 +95,7 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .onFocusChanged { isDateFocused = it.isFocused }
+                        .onFocusChanged { viewModel.updateIsDateFocused(it.isFocused) }
                 )
 
 
@@ -99,23 +103,26 @@ fun RequestScreen(modifier: Modifier = Modifier) {
                 DatePickerComponent(
                     isFocused = isDateFocused,
                     datePickerState = datePickerState,
-                    onDismissRequest = { isDateFocused = false },
+                    onDismissRequest = { viewModel.updateIsDateFocused(false) },
                     onDateSelected = { date ->
-                        dateResult = convertLongToTime(date)
-                        isDateFocused = false
+                        viewModel.updateDateResult(convertLongToTime(date))
+                        viewModel.updateIsDateFocused(false)
                     },
                 )
 
                 TextField(
                     value = topic,
-                    onValueChange = { topic = it },
-                    label = { Text("Topic") }, // Add label here
+                    onValueChange = { viewModel.updateTopic(it) },
+                    label = { Text(text = stringResource(id = R.string.topic)) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     )
                 )
+                Button(onClick = { /*TODO*/ }) { // implement this
+                    Text(text = stringResource(id = R.string.request_feedback))
+                }
             }
         }
 

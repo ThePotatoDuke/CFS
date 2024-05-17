@@ -31,7 +31,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ListScreen(
     modifier: Modifier = Modifier,
-    viewModel: ListViewModel
+    viewModel: ListViewModel = ListViewModel()
 ) {
     val feedbacks = viewModel.feedbackList.collectAsState(initial = listOf()).value
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
