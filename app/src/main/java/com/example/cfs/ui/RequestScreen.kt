@@ -32,6 +32,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -40,11 +41,11 @@ import java.util.Date
 @Composable
 fun RequestScreen(
     modifier: Modifier = Modifier,
-    viewModel: RequestViewModel = RequestViewModel()
 ) {
+    val viewModel = viewModel<RequestViewModel>()
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
 
-    val dateResult = viewModel.dateReault
+    val dateResult = viewModel.dateResult
 
     val isDateFocused = viewModel.isDateFocused
 
@@ -84,7 +85,7 @@ fun RequestScreen(
                     label = { Text("Date") }, // Add label here from resource
                     trailingIcon = {
                         IconButton(
-                            onClick = { }
+                            onClick = { viewModel.updateIsDateFocused(true) }
                         ) {
                             Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
                         }

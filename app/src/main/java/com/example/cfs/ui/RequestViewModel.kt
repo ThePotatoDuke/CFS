@@ -22,7 +22,7 @@ class RequestViewModel : ViewModel() {
 //    private var _dateResult = MutableStateFlow("Pick a date")
 //    var dateResult: Flow<String> = _dateResult
 
-    var dateReault by mutableStateOf("Pick a date")
+    var dateResult by mutableStateOf("Pick a date")
         private set
 
 //    private var _isDateFocused = MutableStateFlow(false)
@@ -52,7 +52,7 @@ class RequestViewModel : ViewModel() {
         private set
 
     fun updateDateResult(dateString: String) {
-        dateReault = dateString
+        dateResult = dateString
     }
 
     fun updateIsDateFocused(isDateFocused: Boolean) {
