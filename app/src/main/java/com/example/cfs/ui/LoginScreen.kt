@@ -44,7 +44,7 @@ fun LoginScreen(
             .fillMaxSize()
             .padding(mediumPadding),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(
             Modifier,
