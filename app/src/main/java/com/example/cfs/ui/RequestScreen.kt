@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -82,7 +84,7 @@ fun RequestScreen(
                     value = dateResult,
                     onValueChange = { },
                     readOnly = true,
-                    label = { Text("Date") }, // Add label here from resource
+                    label = { Text(text = stringResource(id = androidx.compose.material3.R.string.date_input_label)) },
                     trailingIcon = {
                         IconButton(
                             onClick = { viewModel.updateIsDateFocused(true) }
@@ -111,13 +113,16 @@ fun RequestScreen(
                 TextField(
                     value = topic,
                     onValueChange = { viewModel.updateTopic(it) },
-                    label = { Text("Topic") }, // Add label here
+                    label = { Text(text = stringResource(id = R.string.topic)) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     )
                 )
+                Button(onClick = { /*TODO*/ }) { // implement this
+                    Text(text = stringResource(id = R.string.request_feedback))
+                }
             }
         }
 

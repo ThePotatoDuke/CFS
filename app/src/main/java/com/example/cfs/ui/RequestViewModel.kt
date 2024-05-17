@@ -19,33 +19,19 @@ class RequestViewModel : ViewModel() {
     private val _courseCodeList = MutableStateFlow<List<String>>(listOf())
     val courseCodeList: Flow<List<String>> = _courseCodeList
 
-//    private var _dateResult = MutableStateFlow("Pick a date")
-//    var dateResult: Flow<String> = _dateResult
 
     var dateResult by mutableStateOf("Pick a date")
         private set
 
-//    private var _isDateFocused = MutableStateFlow(false)
-//    var isDateFocused: Flow<Boolean> = _isDateFocused
 
     var isDateFocused by mutableStateOf(false)
         private set
 
-//    private val _isExpanded = MutableStateFlow(false)
-//    val isExpanded: Flow<Boolean> = _isExpanded
-
     var isExpanded by mutableStateOf(false)
         private set
 
-
-//    private var _selectedCourse = MutableStateFlow("Choose Course")
-//    var selectedCourse: Flow<String> = _selectedCourse
-
     var selectedCourse by mutableStateOf("Choose Course")
         private set
-
-//    private val _topic = MutableStateFlow("")
-//    val topic: Flow<String> = _topic
 
 
     var topic by mutableStateOf("")
