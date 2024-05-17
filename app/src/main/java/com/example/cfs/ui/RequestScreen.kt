@@ -1,6 +1,10 @@
 package com.example.cfs.ui
 
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,15 +25,19 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -36,9 +45,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.example.utils.OffsetDateTimeFormatter
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(
@@ -56,6 +68,10 @@ fun RequestScreen(
 
     val topic = viewModel.topic
 
+    // for the snackbar
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,6 +79,7 @@ fun RequestScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val context = LocalContext.current
         Card(
 
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -81,7 +98,7 @@ fun RequestScreen(
                 )
 
                 TextField(
-                    value = dateResult,
+                    value = OffsetDateTimeFormatter.parse(dateResult),
                     onValueChange = { },
                     readOnly = true,
                     label = { Text(text = stringResource(id = androidx.compose.material3.R.string.date_input_label)) },
@@ -105,7 +122,7 @@ fun RequestScreen(
                     datePickerState = datePickerState,
                     onDismissRequest = { viewModel.updateIsDateFocused(false) },
                     onDateSelected = { date ->
-                        viewModel.updateDateResult(convertLongToTime(date))
+                        viewModel.updateDateResult(convertLongToOffsetTime(date))
                         viewModel.updateIsDateFocused(false)
                     },
                 )
@@ -120,7 +137,11 @@ fun RequestScreen(
                         imeAction = ImeAction.Done
                     )
                 )
-                Button(onClick = { /*TODO*/ }) { // implement this
+                Button(onClick = {
+                    viewModel.activateFeedback()
+                    // this will show up even if the app crashes, maybe some error handling here
+                    Toast.makeText(context, "Feedback successfully activated", Toast.LENGTH_SHORT).show()
+                }) { // implement this
                     Text(text = stringResource(id = R.string.request_feedback))
                 }
             }
@@ -128,7 +149,6 @@ fun RequestScreen(
 
 
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -159,10 +179,9 @@ fun DatePickerComponent(
 
 }
 
-fun convertLongToTime(time: Long): String {
-    val date = Date(time)
-    val format = SimpleDateFormat("dd/MM/yy")
-    return format.format(date)
+@RequiresApi(Build.VERSION_CODES.O)
+fun convertLongToOffsetTime(time: Long): OffsetDateTime {
+    return OffsetDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneOffset.systemDefault())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -206,6 +225,7 @@ fun DropdownMenuComponent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showBackground = true)
 fun requestPreview() {
