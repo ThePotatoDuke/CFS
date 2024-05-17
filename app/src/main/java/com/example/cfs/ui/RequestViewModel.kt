@@ -73,7 +73,7 @@ class RequestViewModel : ViewModel() {
     private fun getCourseCodes() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = fetchCourseCodes()
-            val courseCodeStringList = mutableListOf("")
+            val courseCodeStringList = mutableListOf<String>()
             response.map { courseCodeStringList.add(it.courseCode) }
             _courseCodeList.emit(courseCodeStringList)
         }
