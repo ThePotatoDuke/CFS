@@ -47,12 +47,15 @@ fun ListScreen(
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
 
     var selectedCard by remember { mutableStateOf<Feedback?>(null) }
+    Surface(
+        color = MaterialTheme.colorScheme.background
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxHeight()) {
 
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+            items(feedbacks.size) { index ->
+                // Access the feedback object using the index
+                val feedback = feedbacks[index]
 
-        items(feedbacks.size) { index ->
-            // Access the feedback object using the index
-            val feedback = feedbacks[index]
 
             // Render the UI for each feedback item
             FeedbackItem(
@@ -70,6 +73,7 @@ fun ListScreen(
             courseCode = courseCodes.first { courses -> it.course_id == courses.id }.courseCode
         ) {
             selectedCard = null // Dismiss the popup
+
         }
     }
 }

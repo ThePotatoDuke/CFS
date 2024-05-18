@@ -1,6 +1,8 @@
 package com.example.cfs
 
 import MainScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,6 +21,7 @@ enum class CFSScreens() {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CFSApp(
     viewModel: LoginViewModel = viewModel(),
