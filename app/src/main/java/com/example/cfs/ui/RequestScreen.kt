@@ -1,5 +1,10 @@
 package com.example.cfs.ui
 
+import android.annotation.SuppressLint
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,16 +25,27 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -37,9 +53,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.example.utils.OffsetDateTimeFormatter
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(
@@ -57,88 +78,119 @@ fun RequestScreen(
 
     val topic = viewModel.topic
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.padding_small)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Card(
-
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(50.dp)
-            ) {
-                DropdownMenuComponent(
-                    isExpanded = isExpanded,
-                    onExpandedChange = { viewModel.updateIsExpanded(it) },
-                    selectedCourse = selectedCourse,
-                    onCourseSelected = { viewModel.updateSelectedCourse(it) },
-                    courseItems = courseCodes,
-                )
-
-                TextField(
-                    value = dateResult,
-                    onValueChange = { },
-                    readOnly = true,
-                    label = { Text(text = stringResource(id = androidx.compose.material3.R.string.date_input_label)) },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { viewModel.updateIsDateFocused(true) }
-                        ) {
-                            Icon(Icons.Rounded.DateRange, contentDescription = "Select Date")
-                        }
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onFocusChanged { viewModel.updateIsDateFocused(it.isFocused) }
-                )
-
-
-                val datePickerState = rememberDatePickerState()
-                DatePickerComponent(
-                    isFocused = isDateFocused,
-                    datePickerState = datePickerState,
-                    onDismissRequest = { viewModel.updateIsDateFocused(false) },
-                    onDateSelected = { date ->
-                        viewModel.updateDateResult(convertLongToTime(date))
-                        viewModel.updateIsDateFocused(false)
-                    },
-                )
-
-                TextField(
-                    value = topic,
-                    onValueChange = { viewModel.updateTopic(it) },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.topic),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
-                    ),
-                )
-                Button(onClick = { /*TODO*/ }) { // implement this
-                    Text(
-                        text = stringResource(id = R.string.request_feedback),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
-
-
+    // for the snackbar
+    val snackbarHostState = remember {
+        SnackbarHostState()
     }
+    val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
+    Scaffold(
+        content = {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                val context = LocalContext.current
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(50.dp)
+                    ) {
+                        DropdownMenuComponent(
+                            isExpanded = isExpanded,
+                            onExpandedChange = { viewModel.updateIsExpanded(it) },
+                            selectedCourse = selectedCourse,
+                            onCourseSelected = { viewModel.updateSelectedCourse(it) },
+                            courseItems = courseCodes,
+                        )
+
+                        TextField(
+                            value = OffsetDateTimeFormatter.parse(dateResult),
+                            onValueChange = { },
+                            readOnly = true,
+                            label = { Text(text = stringResource(id = androidx.compose.material3.R.string.date_input_label)) },
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = { viewModel.updateIsDateFocused(true) }
+                                ) {
+                                    Icon(
+                                        Icons.Rounded.DateRange,
+                                        contentDescription = "Select Date"
+                                    )
+                                }
+                            },
+                            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onFocusChanged { viewModel.updateIsDateFocused(it.isFocused) }
+                        )
+
+
+
+                        val datePickerState = rememberDatePickerState()
+                        DatePickerComponent(
+                            isFocused = isDateFocused,
+                            datePickerState = datePickerState,
+                            onDismissRequest = { viewModel.updateIsDateFocused(false) },
+                            onDateSelected = { date ->
+                                viewModel.updateDateResult(convertLongToOffsetTime(date))
+                                viewModel.updateIsDateFocused(false)
+                            },
+                        )
+
+                        TextField(
+                            value = topic,
+                            onValueChange = { viewModel.updateTopic(it) },
+                            label = { Text(text = stringResource(id = R.string.topic)) },
+                            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            )
+                        )
+                        Button(onClick = {
+                            focusManager.clearFocus()
+                            coroutineScope.launch {
+                                val snackBarResult = snackbarHostState.showSnackbar(
+                                    message = "Feedback request is sent",
+                                    actionLabel = "Undo",
+                                    duration = SnackbarDuration.Short
+                                )
+                                when (snackBarResult) {
+                                    SnackbarResult.ActionPerformed -> {
+                                        // if they undo it, we just don't send the activation request
+                                        Log.d("Snackbar", "feedback taken back")
+                                    }
+
+                                    else -> {
+                                        // dismissed
+                                        viewModel.activateFeedback()
+                                        Log.d("Snackbar", "feedback activated")
+                                        Toast.makeText(
+                                            context,
+                                            "Feedback activated",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+                        ) { // implement this
+                            Text(text = stringResource(id = R.string.request_feedback))
+                        }
+                    }
+                }
+            } // column
+        }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -169,10 +221,9 @@ fun DatePickerComponent(
 
 }
 
-fun convertLongToTime(time: Long): String {
-    val date = Date(time)
-    val format = SimpleDateFormat("dd/MM/yy")
-    return format.format(date)
+@RequiresApi(Build.VERSION_CODES.O)
+fun convertLongToOffsetTime(time: Long): OffsetDateTime {
+    return OffsetDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneOffset.systemDefault())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -216,6 +267,7 @@ fun DropdownMenuComponent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showBackground = true)
 fun requestPreview() {
