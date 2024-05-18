@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,20 +36,24 @@ fun ListScreen(
 ) {
     val feedbacks = viewModel.feedbackList.collectAsState(initial = listOf()).value
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+    Surface(
+        color = MaterialTheme.colorScheme.background
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxHeight()) {
 
-        items(feedbacks.size) { index ->
-            // Access the feedback object using the index
-            val feedback = feedbacks[index]
+            items(feedbacks.size) { index ->
+                // Access the feedback object using the index
+                val feedback = feedbacks[index]
 
-            // Render the UI for each feedback item
-            FeedbackItem(
-                feedback,
-                courseCode = courseCodes.first { it.id == feedback.course_id }.courseCode
-            )
+                // Render the UI for each feedback item
+                FeedbackItem(
+                    feedback,
+                    courseCode = courseCodes.first { it.id == feedback.course_id }.courseCode
+                )
+            }
+
+
         }
-
-
     }
 }
 

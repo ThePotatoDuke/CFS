@@ -20,6 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -93,6 +94,7 @@ fun RequestScreen(
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    textStyle = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .onFocusChanged { viewModel.updateIsDateFocused(it.isFocused) }
@@ -113,15 +115,23 @@ fun RequestScreen(
                 TextField(
                     value = topic,
                     onValueChange = { viewModel.updateTopic(it) },
-                    label = { Text(text = stringResource(id = R.string.topic)) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.topic),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
-                    )
+                    ),
                 )
                 Button(onClick = { /*TODO*/ }) { // implement this
-                    Text(text = stringResource(id = R.string.request_feedback))
+                    Text(
+                        text = stringResource(id = R.string.request_feedback),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }
