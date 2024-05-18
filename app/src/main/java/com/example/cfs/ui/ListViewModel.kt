@@ -31,7 +31,7 @@ class ListViewModel : ViewModel() {
     private suspend fun fetchFeedbacks(): List<Feedback> {
         return supabase
             .from("feedbacks")
-            .select(Columns.list("id", "course_topic", "course_date", "course_id"))
+            .select(Columns.list("id", "course_topic", "course_date", "course_id", "summary"))
             .decodeList<Feedback>()
 
     }
