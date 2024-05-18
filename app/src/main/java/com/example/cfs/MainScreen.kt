@@ -87,11 +87,12 @@ fun MainScreen() {
             startDestination = Routes.Request.name,
             modifier = Modifier.padding(paddingValues)
         ) {
-            val listViewModel = ListViewModel()
             composable(route = Routes.Request.name) {
                 RequestScreen()
             }
             composable(route = Routes.List.name) {
+                listViewModel.getFeedbacks()
+                listViewModel.getCourseCodes()
                 ListScreen(viewModel = listViewModel)
             }
         }

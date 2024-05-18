@@ -21,13 +21,6 @@ class ListViewModel : ViewModel() {
     val courseCodeList: Flow<List<Course>> = _courseCodeList
 
 
-    init {
-        getCourseCodes()
-        getFeedbacks()
-
-    }
-
-
     private suspend fun fetchFeedbacks(): List<Feedback> {
         return supabase
             .from("feedbacks")
@@ -36,7 +29,7 @@ class ListViewModel : ViewModel() {
 
     }
 
-    private fun getFeedbacks() {
+    fun getFeedbacks() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = fetchFeedbacks()
             _feedbackList.emit(response)
@@ -51,7 +44,7 @@ class ListViewModel : ViewModel() {
 
     }
 
-    private fun getCourseCodes() {
+    fun getCourseCodes() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = fetchCourseCodes()
             _courseCodeList.emit(response)
