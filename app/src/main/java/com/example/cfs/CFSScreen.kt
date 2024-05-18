@@ -32,7 +32,7 @@ fun CFSApp(
         composable(route = CFSScreens.Login.name) {
             LoginScreen(
                 userMail = viewModel.userMail,
-                password = viewModel.password,
+                password = viewModel.userPassword,
                 onUserMailEdit = { viewModel.updateUserName(it) },
                 onPasswordEdit = { viewModel.updatePassword(it) },
                 isLoginError = uiState.isLoginError,

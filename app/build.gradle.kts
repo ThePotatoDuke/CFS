@@ -67,20 +67,26 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    // for signing out users with application stop
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
+
     implementation("androidx.navigation:navigation-compose:2.7.4")
+
     implementation("androidx.compose.ui:ui:1.0.0")
     implementation("androidx.compose.material:material:1.0.0")
     implementation(platform("io.github.jan-tennert.supabase:bom:$supabase_version"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha01")
     implementation("io.github.jan-tennert.supabase:postgrest-kt:$supabase_version")
     implementation("io.github.jan-tennert.supabase:storage-kt:$supabase_version")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:$supabase_version")

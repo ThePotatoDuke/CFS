@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
 
     var userMail by mutableStateOf("")
         private set
-    var password by mutableStateOf("")
+    var userPassword by mutableStateOf("")
         private set
 
     fun updateUserName(username: String) {
@@ -30,19 +30,32 @@ class LoginViewModel : ViewModel() {
     }
 
     fun updatePassword(password: String) {
-        this.password = password
+        this.userPassword = password
     }
 
     fun signInWithEmail() {
         viewModelScope.launch {
             try {
-                supabase.auth.signInWith(Email) {
+                val yes = supabase.auth.signInWith(Email) {
                     email = userMail
-                    password = password
+                    password = userPassword
                 }
+                println("yes: $yes")
+                val user = supabase.auth.retrieveUserForCurrentSession(updateSession = true)
+                println("user: $user")
 
             } catch (e: Exception) {
                 println(e.printStack())
+                // TODO we'll manage the session
+                var session = supabase.auth.currentSessionOrNull()
+                println("nice session ${session ?: "no session"}")
+                println("nice session user ${session?.user ?: "no user"}")
+                supabase.auth.signOut()
+                println("signing out...")
+
+                session = supabase.auth.currentSessionOrNull()
+                println("nice session ${session ?: "no session"}")
+                println("nice session user ${session?.user ?: "no user"}")
             }
         }
     }
