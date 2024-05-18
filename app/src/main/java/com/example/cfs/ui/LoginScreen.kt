@@ -15,7 +15,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -31,10 +30,10 @@ import com.example.cfs.ui.theme.CFSTheme
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onLoginButtonClicked: () -> Unit = { },
-    onUserNameEdit: (String) -> Unit = {},
+    onUserMailEdit: (String) -> Unit = {},
     onPasswordEdit: (String) -> Unit = {},
     isLoginError: Boolean = true,
-    userName: String = "",
+    userMail: String = "",
     password: String = ""
 ) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
@@ -63,10 +62,10 @@ fun LoginScreen(
                     style = MaterialTheme.typography.displayMedium
                 )
                 EditTextField(
-                    label = R.string.user_name,
+                    label = R.string.user_mail,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                    value = userName,
-                    onValueChange = onUserNameEdit,
+                    value = userMail,
+                    onValueChange = onUserMailEdit,
                     isLoginError = isLoginError
                 )
                 EditTextField(

@@ -31,13 +31,14 @@ fun CFSApp(
     ) {
         composable(route = CFSScreens.Login.name) {
             LoginScreen(
-                userName = viewModel.userName,
+                userMail = viewModel.userMail,
                 password = viewModel.password,
-                onUserNameEdit = { viewModel.updateUserName(it) },
+                onUserMailEdit = { viewModel.updateUserName(it) },
                 onPasswordEdit = { viewModel.updatePassword(it) },
                 isLoginError = uiState.isLoginError,
                 onLoginButtonClicked = {
-                    if (viewModel.checkUser()) {
+                    viewModel.signInWithEmail()
+                    if (viewModel.isSignedIn()) {
                         navController.navigate(CFSScreens.FeedBackRequest.name)
                     }
 

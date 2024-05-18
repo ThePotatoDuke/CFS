@@ -19,14 +19,14 @@ data class BottomNavigationItem(
 
 val items = listOf(
     BottomNavigationItem(
-        title = "deez",
+        title = "create feedback",
         route = Routes.Request.name,
         selectedIcon = Icons.Filled.AddCircle,
         unselectedIcon = Icons.Outlined.Add,
         hasNews = false,
     ),
     BottomNavigationItem(
-        title = "nutz",
+        title = "list of feedback",
         route = Routes.List.name,
         selectedIcon = Icons.Filled.List,
         unselectedIcon = Icons.Outlined.List,
