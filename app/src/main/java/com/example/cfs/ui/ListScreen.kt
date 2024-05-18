@@ -113,10 +113,12 @@ fun FeedbackItem(
 
             }
             Divider(
-                    modifier = Modifier
-                            .fillMaxHeight()  //fill the max height
-                            .width(1.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+
+                modifier = Modifier
+                    .fillMaxHeight()  //fill the max height
+                    .width(2.dp),
+                color = MaterialTheme.colorScheme.background
+
             )
 
             Column(modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small))) {
