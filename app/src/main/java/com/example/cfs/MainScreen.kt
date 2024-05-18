@@ -91,8 +91,6 @@ fun MainScreen() {
                 RequestScreen()
             }
             composable(route = Routes.List.name) {
-                listViewModel.getFeedbacks()
-                listViewModel.getCourseCodes()
                 ListScreen(viewModel = listViewModel)
             }
         }

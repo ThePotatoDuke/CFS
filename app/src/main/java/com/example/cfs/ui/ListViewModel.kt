@@ -20,6 +20,10 @@ class ListViewModel : ViewModel() {
     private val _courseCodeList = MutableStateFlow<List<Course>>(listOf())
     val courseCodeList: Flow<List<Course>> = _courseCodeList
 
+    init {
+        getFeedbacks()
+        getCourseCodes()
+    }
 
     private suspend fun fetchFeedbacks(): List<Feedback> {
         return supabase
