@@ -25,20 +25,19 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -52,8 +51,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.cfs.CFSScreens
 import com.example.cfs.R
+import com.example.cfs.data.supabase
 import com.example.utils.OffsetDateTimeFormatter
+import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -65,6 +70,7 @@ import java.time.ZoneOffset
 @Composable
 fun RequestScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController()
 ) {
     val viewModel = viewModel<RequestViewModel>()
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
@@ -134,7 +140,6 @@ fun RequestScreen(
                         )
 
 
-
                         val datePickerState = rememberDatePickerState()
                         DatePickerComponent(
                             isFocused = isDateFocused,
@@ -157,28 +162,37 @@ fun RequestScreen(
                             )
                         )
                         Button(onClick = {
-                            focusManager.clearFocus()
-                            coroutineScope.launch {
-                                val snackBarResult = snackbarHostState.showSnackbar(
-                                    message = "Feedback request is sent",
-                                    actionLabel = "Undo",
-                                    duration = SnackbarDuration.Short
-                                )
-                                when (snackBarResult) {
-                                    SnackbarResult.ActionPerformed -> {
-                                        // if they undo it, we just don't send the activation request
-                                        Log.d("Snackbar", "feedback taken back")
-                                    }
+                            if (topic.isEmpty() && selectedCourse == "Choose Course") {
+                                // naaa
+                                println("no and bai")
+                                coroutineScope.launch {
+                                    supabase.auth.signOut()
+                                    // TODO this
+                                }
+                            } else {
+                                focusManager.clearFocus()
+                                coroutineScope.launch {
+                                    val snackBarResult = snackbarHostState.showSnackbar(
+                                        message = "Feedback request is sent",
+                                        actionLabel = "Undo",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                    when (snackBarResult) {
+                                        SnackbarResult.ActionPerformed -> {
+                                            // if they undo it, we just don't send the activation request
+                                            Log.d("Snackbar", "feedback taken back")
+                                        }
 
-                                    else -> {
-                                        // dismissed
-                                        viewModel.activateFeedback()
-                                        Log.d("Snackbar", "feedback activated")
-                                        Toast.makeText(
-                                            context,
-                                            "Feedback activated",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        else -> {
+                                            // dismissed
+                                            viewModel.activateFeedback()
+                                            Log.d("Snackbar", "feedback activated")
+                                            Toast.makeText(
+                                                context,
+                                                "Feedback activated",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
                             }
