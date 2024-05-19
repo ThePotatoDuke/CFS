@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -164,7 +166,9 @@ fun InfoPopup(feedback: Feedback, courseCode: String, onDismiss: () -> Unit) {
                 Text(text = feedback.course_topic, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 3.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ) {
@@ -188,10 +192,18 @@ fun InfoPopup(feedback: Feedback, courseCode: String, onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f), // Customize color if needed
                     thickness = 1.dp // Customize thickness if needed
                 )
-                Text(
-                    text = feedback.summary ?: "Feedback not available yet",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text = feedback.summary ?: "Feedback not available yet",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onDismiss) {
                     Text("Close")
