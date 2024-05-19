@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -19,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -48,7 +44,6 @@ enum class Routes() {
 fun MainScreen(onExitClick: () -> Unit) {
     val navController = rememberNavController()
     //val listViewModel = ListViewModel()
-    var canFilterState by remember { mutableStateOf(false) }
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -95,7 +90,7 @@ fun MainScreen(onExitClick: () -> Unit) {
             }
         },
         topBar = {
-            CFSTopAppBar(canFilter = canFilterState, onNavBtnClck = onExitClick)
+            CFSTopAppBar(onNavBtnClck = onExitClick)
         }
     ) { paddingValues ->
         NavHost(
@@ -105,11 +100,9 @@ fun MainScreen(onExitClick: () -> Unit) {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(route = Routes.Request.name) {
-                canFilterState = false
                 RequestScreen()
             }
             composable(route = Routes.List.name) {
-                canFilterState = true
                 ListScreen()
             }
         }
@@ -120,7 +113,6 @@ fun MainScreen(onExitClick: () -> Unit) {
 @Composable
 fun CFSTopAppBar(
     modifier: Modifier = Modifier,
-    canFilter: Boolean = false,
     onNavBtnClck: () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -128,14 +120,6 @@ fun CFSTopAppBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Image( to add logo
-//                    modifier = Modifier
-//                        .size(dimensionResource(id = R.dimen.image_size))
-//                        .padding(dimensionResource(id = R.dimen.padding_small)),
-//                    painter = painterResource(R.drawable.),
-//
-//                    contentDescription = null
-//                )
                 Text(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.displayLarge
@@ -146,21 +130,18 @@ fun CFSTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary, // Use primary color from the theme
             titleContentColor = MaterialTheme.colorScheme.onPrimary, // Use onPrimary color for title text
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary // Use onPrimary color for action icons
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         navigationIcon = {
             IconButton(onClick = onNavBtnClck) {
-                Icon(Icons.Filled.ExitToApp, contentDescription = "Menu Icon")
-            }
-        },
-        actions = {
-            if (canFilter) {
-                IconButton(onClick = { /* Handle more icon press */ }) {
-                    Icon(Icons.Filled.FilterAlt, contentDescription = "Filter Icon")
-                }
-            }
+                Icon(
+                    Icons.Filled.ExitToApp,
+                    "contentDescription",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
 
-        },
+            }
+        }
     )
 }
 

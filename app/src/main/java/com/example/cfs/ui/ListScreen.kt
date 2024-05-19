@@ -54,7 +54,7 @@ fun ListScreen(
             color = MaterialTheme.colorScheme.background
         ) {
             LazyColumn(modifier = Modifier.fillMaxHeight()) {
-
+                feedbacks.sortedBy { feedback -> courseCodes.first { it.id == feedback.course_id }.courseCode }
                 items(feedbacks.size) { index ->
                     // Access the feedback object using the index
                     val feedback = feedbacks[index]
@@ -101,13 +101,14 @@ fun FeedbackItem(
         Row(
             Modifier
                 .height(IntrinsicSize.Min), //intrinsic measurements
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
 
-        ) {
+            ) {
 
             Row(
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1.3F)
             ) {
                 Text(
                     text = courseCode,
@@ -126,7 +127,11 @@ fun FeedbackItem(
 
             )
 
-            Column(modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small))) {
+            Column(
+                modifier = modifier
+                    .padding(dimensionResource(id = R.dimen.padding_small))
+                    .weight(4f)
+            ) {
                 Text(
                     text = feedback.course_topic,
                     style = MaterialTheme.typography.headlineSmall
