@@ -42,13 +42,6 @@ class ListViewModel : ViewModel() {
         }
     }
 
-//    private suspend fun fetchFeedbacks(): List<Feedback> {
-//        return supabase
-//            .from("feedbacks")
-//            .select(Columns.list("id", "course_topic", "course_date", "course_id", "summary"))
-//            .decodeList<Feedback>()
-//
-//    }
 
     suspend fun getFeedbacks() {
         val response = supabase
@@ -59,13 +52,6 @@ class ListViewModel : ViewModel() {
 
     }
 
-//    private suspend fun fetchCourseCodes(): List<Course> {
-//        return supabase
-//            .from("courses")
-//            .select(Columns.list("id", "course_code", "course_name"))
-//            .decodeList<Course>()
-//
-//    }
 
     suspend fun getCourseCodes() {
         val response = supabase
