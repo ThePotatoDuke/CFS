@@ -32,6 +32,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cfs.R
 import com.example.cfs.models.Feedback
 import java.time.format.DateTimeFormatter
@@ -40,75 +41,79 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListScreen(
-        modifier: Modifier = Modifier,
-        viewModel: ListViewModel = ListViewModel()
+    modifier: Modifier = Modifier,
 ) {
+    val viewModel = viewModel<ListViewModel>()
     val feedbacks = viewModel.feedbackList.collectAsState(initial = listOf()).value
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
+    var isLoading = viewModel.isLoading
 
     var selectedCard by remember { mutableStateOf<Feedback?>(null) }
-    Surface(
+    if (!isLoading) {
+        Surface(
             color = MaterialTheme.colorScheme.background
-    ) {
-        LazyColumn(modifier = Modifier.fillMaxHeight()) {
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxHeight()) {
 
-            items(feedbacks.size) { index ->
-                // Access the feedback object using the index
-                val feedback = feedbacks[index]
+                items(feedbacks.size) { index ->
+                    // Access the feedback object using the index
+                    val feedback = feedbacks[index]
 
 
-                // Render the UI for each feedback item
-                FeedbackItem(
+                    // Render the UI for each feedback item
+                    FeedbackItem(
                         feedback = feedback,
                         courseCode = courseCodes.first { it.id == feedback.course_id }.courseCode
-                ) { clickedCard ->
-                    selectedCard = clickedCard
+                    ) { clickedCard ->
+                        selectedCard = clickedCard
+                    }
                 }
-            }
 
-        }
-        selectedCard?.let {
-            InfoPopup(
+            }
+            selectedCard?.let {
+                InfoPopup(
                     feedback = it,
                     courseCode = courseCodes.first { courses -> it.course_id == courses.id }.courseCode
-            ) {
-                selectedCard = null // Dismiss the popup
+                ) {
+                    selectedCard = null // Dismiss the popup
 
+                }
             }
         }
     }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FeedbackItem(
-        feedback: Feedback,
-        modifier: Modifier = Modifier,
-        courseCode: String,
-        onClick: (Feedback) -> Unit
+    feedback: Feedback,
+    modifier: Modifier = Modifier,
+    courseCode: String,
+    onClick: (Feedback) -> Unit
 ) {
     Card(
-            modifier = modifier
-                    .padding(dimensionResource(R.dimen.padding_small))
-                    .fillMaxWidth()
-                    .clickable { onClick(feedback) }
+        modifier = modifier
+            .padding(dimensionResource(R.dimen.padding_small))
+            .fillMaxWidth()
+            .clickable { onClick(feedback) }
     ) {
         Row(
-                Modifier
-                        .height(IntrinsicSize.Min), //intrinsic measurements
-                verticalAlignment = Alignment.CenterVertically
+            Modifier
+                .height(IntrinsicSize.Min), //intrinsic measurements
+            verticalAlignment = Alignment.CenterVertically
 
         ) {
 
             Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                        text = courseCode,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.padding_small))
+                    text = courseCode,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_small))
                 )
 
             }
@@ -123,13 +128,13 @@ fun FeedbackItem(
 
             Column(modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small))) {
                 Text(
-                        text = feedback.course_topic,
-                        style = MaterialTheme.typography.headlineSmall
+                    text = feedback.course_topic,
+                    style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                        text = feedback.course_date.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
-                                .toString(),
-                        style = MaterialTheme.typography.bodyLarge
+                    text = feedback.course_date.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                        .toString(),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
@@ -141,45 +146,46 @@ fun FeedbackItem(
 fun InfoPopup(feedback: Feedback, courseCode: String, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
         ) {
             Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = feedback.course_topic, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                            text = courseCode,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
+                        text = courseCode,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
 
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                            text = feedback.course_date.format(DateTimeFormatter.ofPattern("dd/MM/yy")).toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
+                        text = feedback.course_date.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                            .toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
 
                     )
 
                 }
                 Divider(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f), // Customize color if needed
-                        thickness = 1.dp // Customize thickness if needed
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f), // Customize color if needed
+                    thickness = 1.dp // Customize thickness if needed
                 )
                 Text(
-                        text = feedback.summary ?: "Feedback not available yet",
-                        style = MaterialTheme.typography.bodyLarge
+                    text = feedback.summary ?: "Feedback not available yet",
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onDismiss) {
