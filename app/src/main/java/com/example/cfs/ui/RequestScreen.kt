@@ -157,28 +157,37 @@ fun RequestScreen(
                             )
                         )
                         Button(onClick = {
-                            focusManager.clearFocus()
-                            coroutineScope.launch {
-                                val snackBarResult = snackbarHostState.showSnackbar(
-                                    message = "Feedback request is sent",
-                                    actionLabel = "Undo",
-                                    duration = SnackbarDuration.Short
-                                )
-                                when (snackBarResult) {
-                                    SnackbarResult.ActionPerformed -> {
-                                        // if they undo it, we just don't send the activation request
-                                        Log.d("Snackbar", "feedback taken back")
-                                    }
+                            if (topic.isEmpty() || selectedCourse == "Choose Course") {
+                                // invalid feedback request
+                                Toast.makeText(
+                                    context,
+                                    "Select course and choose topic!!!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                focusManager.clearFocus()
+                                coroutineScope.launch {
+                                    val snackBarResult = snackbarHostState.showSnackbar(
+                                        message = "Feedback request is sent",
+                                        actionLabel = "Undo",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                    when (snackBarResult) {
+                                        SnackbarResult.ActionPerformed -> {
+                                            // if they undo it, we just don't send the activation request
+                                            Log.d("Snackbar", "feedback taken back")
+                                        }
 
-                                    else -> {
-                                        // dismissed
-                                        viewModel.activateFeedback()
-                                        Log.d("Snackbar", "feedback activated")
-                                        Toast.makeText(
-                                            context,
-                                            "Feedback activated",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        else -> {
+                                            // dismissed
+                                            viewModel.activateFeedback()
+                                            Log.d("Snackbar", "feedback activated")
+                                            Toast.makeText(
+                                                context,
+                                                "Feedback activated",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
                             }

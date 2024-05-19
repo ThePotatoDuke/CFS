@@ -13,4 +13,7 @@ data class Course(
     @SerialName("teacher_id")
     val teacher: Int? = null,
 
+    @SerialName("feedbacks")
+    val feedbacks: List<Feedback>? = null,
+
     )
