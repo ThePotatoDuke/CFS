@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cfs.data.LoginUiState
 import com.example.cfs.data.supabase
+import com.example.cfs.ui.theme.globalMail
 import io.github.jan.supabase.gotrue.SessionSource
 import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
@@ -131,6 +132,7 @@ class LoginViewModel : ViewModel() {
                     val user = supabase.auth.currentSessionOrNull()?.user
                     println("user signed in: ${user?.email}")
                     updateSession(true)
+                    globalMail = userMail
                     true
                 } catch (e: Exception) {
                     println("user couldn't sign in: ${e.message}")
