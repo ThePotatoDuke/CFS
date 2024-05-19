@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">CFS</string>
     <string name="login">Login</string>
-    <string name="user_name">Username</string>
+    <string name="user_mail">User Mail</string>
     <string name="password">Password</string>
     <string name="new_request">New Request</string>
     <string name="feedback_list">Feedback List</string>
     <string name="topic">Topic</string>
     <string name="request_feedback">Request Feedback</string>
-
 </resources>

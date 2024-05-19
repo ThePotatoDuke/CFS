@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.cfs.data.supabase
 import com.example.cfs.models.Course
 import com.example.cfs.models.Feedback
+import com.example.cfs.models.Teacher
+import com.example.cfs.ui.theme.globalMail
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
@@ -70,9 +72,13 @@ class RequestViewModel : ViewModel() {
     private suspend fun fetchCourseCodes(): List<Course> {
         return supabase
             .from("courses")
-            .select(Columns.list("id", "course_code", "course_name"))
-            .decodeList<Course>()
+            .select(Columns.list("id", "course_code", "course_name", "teacher_id")) {
+                filter {
+                    eq("teacher_id", getTeacherId()!!)
+                }
+            }
 
+            .decodeList<Course>()
     }
 
     private fun getCourseCodes() {
@@ -113,6 +119,17 @@ class RequestViewModel : ViewModel() {
         )
 
         supabase.from("feedbacks").insert(feedback)
+    }
+
+    suspend fun getTeacherId(): Int? {
+        val teacher = supabase
+            .from("teachers")
+            .select(Columns.raw("id,name,surname,mail")) {
+                filter {
+                    eq("mail", globalMail)
+                }
+            }.decodeSingle<Teacher>()
+        return teacher.id
     }
 
     private fun clearFields() {

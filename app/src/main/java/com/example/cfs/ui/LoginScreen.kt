@@ -72,7 +72,7 @@ fun LoginScreen(
                         style = MaterialTheme.typography.displayMedium
                     )
                     EditTextField(
-                        label = R.string.user_name,
+                        label = R.string.user_mail,
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                         value = userName,
                         onValueChange = onUserNameEdit,
