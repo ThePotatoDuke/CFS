@@ -1,4 +1,6 @@
 import android.os.Build
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -101,9 +103,17 @@ fun MainScreen(onExitClick: () -> Unit) {
         ) {
             composable(route = Routes.Request.name) {
                 RequestScreen()
+                BackHandler(true) { // NOW WE LOG OUT WHEN WE PRESS BACK
+                    onExitClick()
+                    Log.i("LOG_TAG", "Clicked back")
+                }
             }
             composable(route = Routes.List.name) {
                 ListScreen()
+                BackHandler(true) {
+                    onExitClick()
+                    Log.i("LOG_TAG", "Clicked back")
+                }
             }
         }
     }
