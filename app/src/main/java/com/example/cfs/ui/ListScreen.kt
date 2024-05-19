@@ -56,7 +56,7 @@ fun ListScreen(
             color = MaterialTheme.colorScheme.background
         ) {
             LazyColumn(modifier = Modifier.fillMaxHeight()) {
-                feedbacks.sortedBy { feedback -> courseCodes.first { it.id == feedback.course_id }.courseCode }
+                feedbacks.sortedBy { feedback -> courseCodes.first { it.id == feedback.course_id }.courseCode } //ZORT HERE
                 items(feedbacks.size) { index ->
                     // Access the feedback object using the index
                     val feedback = feedbacks[index]
