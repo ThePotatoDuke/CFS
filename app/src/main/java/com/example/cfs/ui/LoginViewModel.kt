@@ -42,6 +42,7 @@ class LoginViewModel : ViewModel() {
     fun updateSession(session: Boolean) {
         this.sessionPersist = session
     }
+
     fun collectSessionStats() {
         viewModelScope.launch {
             supabase.auth.sessionStatus.collect {
@@ -52,6 +53,7 @@ class LoginViewModel : ViewModel() {
                             SessionSource.External -> {
                                 println("external")
                             }
+
                             is SessionSource.Refresh -> {
                                 println("refresh")
                             }
@@ -102,6 +104,7 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+
     suspend fun checkUserSession(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -116,6 +119,7 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+
     fun signInUser(onResult: (Boolean) -> Unit) {
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
@@ -131,6 +135,9 @@ class LoginViewModel : ViewModel() {
                 } catch (e: Exception) {
                     println("user couldn't sign in: ${e.message}")
                     updateSession(false)
+                    _uiState.update { currentState ->
+                        currentState.copy(isLoginError = true)
+                    }
                     false
                 }
             }
