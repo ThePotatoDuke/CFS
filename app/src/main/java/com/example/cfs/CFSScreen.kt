@@ -51,6 +51,7 @@ fun CFSApp(
         }
         composable(route = CFSScreens.FeedBackRequest.name) {
             MainScreen(
+                onExitClick = { navController.navigate(CFSScreens.Login.name) }
             )
         }
     }

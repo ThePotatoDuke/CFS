@@ -88,6 +88,8 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$ktor_version")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-utils:$ktor_version")
+    implementation("androidx.compose.material:material-icons-core:<version>")
+    implementation("androidx.compose.material:material-icons-extended:<version>")
 
 
 }
