@@ -44,8 +44,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ListScreen(
     modifier: Modifier = Modifier,
+    viewModel: ListViewModel = viewModel()
 ) {
-    val viewModel = viewModel<ListViewModel>()
+
     val feedbacks = viewModel.feedbackList.collectAsState(initial = listOf()).value
     val courseCodes = viewModel.courseCodeList.collectAsState(initial = listOf()).value
     var isLoading = viewModel.isLoading

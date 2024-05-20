@@ -31,9 +31,6 @@ class ListViewModel : ViewModel() {
     var isLoading by mutableStateOf(true)
         private set
 
-    init {
-        fetchData()
-    }
 
     fun fetchData() {
         isLoading = true

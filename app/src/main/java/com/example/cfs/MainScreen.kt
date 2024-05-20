@@ -31,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cfs.R
 import com.example.cfs.ui.ListScreen
+import com.example.cfs.ui.ListViewModel
 import com.example.cfs.ui.RequestScreen
 import com.example.cfs.ui.items
 
@@ -45,7 +46,7 @@ enum class Routes() {
 @Composable
 fun MainScreen(onExitClick: () -> Unit) {
     val navController = rememberNavController()
-    //val listViewModel = ListViewModel()
+    val listViewModel = ListViewModel()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -109,7 +110,8 @@ fun MainScreen(onExitClick: () -> Unit) {
                 }
             }
             composable(route = Routes.List.name) {
-                ListScreen()
+                listViewModel.fetchData()
+                ListScreen(viewModel = listViewModel)
                 BackHandler(true) {
                     onExitClick()
                     Log.i("LOG_TAG", "Clicked back")
